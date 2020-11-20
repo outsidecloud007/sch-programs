@@ -1,0 +1,14 @@
+server.port: 80
+
+spring:
+  application:
+    name: ${DOMAIN_NAME:programs.schedule}
+  jackson:
+    serialization:
+      indent-output: true
+  redis:
+    host: ${REDIS_HOSTNAME}
+    port: ${REDIS_PORT}
+    
+
+

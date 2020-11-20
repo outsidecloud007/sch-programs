@@ -1,0 +1,54 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  labels:
+    name: sch-programs
+  name: sch-programs
+  namespace: {namespace}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: sch-programs
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  minReadySeconds: 5
+  template:
+    metadata:
+      labels:
+        name: sch-programs
+    spec:
+      containers:
+      - name: sch-programs
+        image: {imageName}:{imageTag}
+        env:
+        - name: REDIS_HOSTNAME
+          value: "redis"
+        - name: REDIS_PORT
+          value: "6379"
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            memory: 1000Mi
+          limits:
+            memory: 5000Mi
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    name: sch-programs
+  name: sch-programs
+  namespace: easyvideo
+spec:
+  type: ClusterIP
+  ports:
+  - protocol: TCP
+    port: 80
+  selector:
+    name: sch-programs
